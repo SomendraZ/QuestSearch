@@ -7,16 +7,18 @@ import {
   getUniqueTypes,
   searchQuestions,
 } from "./controllers/QuestSearchController.js";
-import {
-  PROTO_PATH,
-  GRPC_HOST,
-  PROTO_FILE_LOAD_OPTIONS,
-} from "./config/config.js";
 
-const packageDefinition = protoLoader.loadSync(
-  PROTO_PATH,
-  PROTO_FILE_LOAD_OPTIONS
-);
+const PROTO_PATH = process.env.PROTO_PATH;
+const GRPC_HOST = process.env.GRPC_HOST;
+
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
+
 const questSearchProto =
   grpc.loadPackageDefinition(packageDefinition).QuestSearch;
 
