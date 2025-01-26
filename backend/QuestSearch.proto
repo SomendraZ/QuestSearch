@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package QuestSearch;
+
+message Block {
+  string text = 1;
+  bool showInOption = 2;
+  bool isAnswer = 3;
+}
+
+message Option {
+  string text = 1;
+  bool isCorrectAnswer = 2;
+}
+
+message Question {
+  string id = 1;
+  string type = 2;
+  string title = 3;
+  string siblingId = 4;
+  string anagramType = 5;
+  repeated Block blocks = 6;
+  string solution = 7;
+  repeated Option options = 8;
+}
+message Empty {}
+
+message QuestionRequest {
+  string query = 1;
+  string type = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message QuestionResponse {
+  repeated Question questions = 1;
+  int32 total_count = 2;
+  int32 total_pages = 3;
+  int32 current_page = 4;
+  int32 per_page = 5;
+
+}
+
+message TypeWithCount {
+  string type = 1;
+  int32 count = 2;
+}
+
+message GetUniqueTypesResponse {
+  repeated TypeWithCount types = 1;
+}
+
+service QuestSearchService {
+  rpc GetQuestions(QuestionRequest) returns (QuestionResponse);
+  rpc GetUniqueTypes(Empty) returns (GetUniqueTypesResponse);
+}
