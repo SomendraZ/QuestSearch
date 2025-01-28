@@ -16,7 +16,7 @@ const questSearchProto =
   grpc.loadPackageDefinition(packageDefinition).QuestSearch;
 
 const client = new questSearchProto.QuestSearchService(
-  "localhost:50051",
+  "127.0.0.1:9090",
   grpc.credentials.createInsecure()
 );
 

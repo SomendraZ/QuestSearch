@@ -5,6 +5,8 @@ const searchQuestions = async (call, callback) => {
   try {
     const { query, type, page = 1, limit = 10 } = call.request;
 
+    console.log("Search Questions Request Received:", call.request);
+
     let filter = {};
     if (query) {
       filter.title = { $regex: query, $options: "i" };
@@ -61,6 +63,7 @@ const searchQuestions = async (call, callback) => {
 
 const getUniqueTypes = async (_, callback) => {
   try {
+    console.log("Get Unique Types Request Received.");
     const uniqueTypes = await QuestSearchModel.distinct("type");
 
     if (!uniqueTypes || uniqueTypes.length === 0) {

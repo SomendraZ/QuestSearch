@@ -24,12 +24,37 @@ const questSearchProto =
 
 const server = new grpc.Server();
 
+const corsMiddleware = (call, callback, next) => {
+  const metadata = call.metadata.getMap();
+  const origin = metadata["origin"];
+
+  if (origin) {
+    call.sendMetadata(
+      new grpc.Metadata({
+        "access-control-allow-origin": origin,
+        "access-control-allow-methods": "GET, POST, OPTIONS",
+        "access-control-allow-headers": "Content-Type, Authorization",
+      })
+    );
+  }
+
+  next();
+};
+
+const corsHandler = (call, callback) => {
+  callback(null, {});
+};
+
 connectDB()
   .then(() => {
     if (questSearchProto && questSearchProto.QuestSearchService) {
       server.addService(questSearchProto.QuestSearchService.service, {
-        GetQuestions: searchQuestions,
-        GetUniqueTypes: getUniqueTypes,
+        GetQuestions: (call, callback) =>
+          corsMiddleware(call, callback, () => searchQuestions(call, callback)),
+        GetUniqueTypes: (call, callback) =>
+          corsMiddleware(call, callback, () => getUniqueTypes(call, callback)),
+        // Add a handler for CORS preflight requests
+        options: corsHandler,
       });
 
       server.bindAsync(
